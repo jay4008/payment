@@ -1,29 +1,39 @@
 import React from 'react'
-import { View, Text, StyleSheet ,Dimensions } from 'react-native'
+import { View, Text, StyleSheet, Dimensions } from 'react-native'
 import QRCode from 'react-native-qrcode-svg';
 import { colors } from '../assets/common/Common';
 import { CusButtom } from '../common/CusButtom';
 import { Rtext } from '../common/Rtext';
 const { height, width } = Dimensions.get('window')
-export default function QrCode() {
+export default function QrCode(props) {
+    let sendObject = {
+        name: "jay shah",
+        userId: "uid1234",
+        askedMoney: props?.route?.params?.money,
+        notesAndCount : props?.route?.params?.currencyNotes
+    }
     return (
-        <View style = {{flex : 1}}>
+        <View style={{ flex: 1 }}>
             <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
                 <View style={styles.topView} >
-                    <Rtext style={styles.walletTxt}>Send Rupee 500</Rtext>
+
+                    {
+                        props?.route?.params?.money !== undefined && <Rtext style={styles.walletTxt}>Send Rupee {props?.route?.params?.money}</Rtext>
+                    }
+
                 </View>
                 <QRCode
                     size={250}
-                    value="http://awesome.link.qr"
+                    value={JSON.stringify(sendObject)}
                 />
             </View>
 
-            <Rtext style = {styles.upi}>UPI ID : shahjay844@okhdfc ></Rtext>
-            <Rtext style = {{...styles.upi , marginTop : 5}}>Scan this code to pay me</Rtext>
-<View style = {{flexDirection :'row' , alignItems :'center' , justifyContent :'space-between' ,right :0, width : width, paddingHorizontal : 10, position :'absolute' , bottom : 0 , marginBottom : 20}}>
-    <CusButtom textStyle = {styles.txt} BTNstyle = {styles.btnStyle} text = {"Open Scanner"} />
-    <CusButtom textStyle = {styles.txt}  BTNstyle = {styles.btnStyle}  text = {"Copy UPI Id"} />
-</View>
+            <Rtext style={styles.upi}>UPI ID : shahjay844@okhdfc ></Rtext>
+            <Rtext style={{ ...styles.upi, marginTop: 5 }}>Scan this code to pay me</Rtext>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', right: 0, width: width, paddingHorizontal: 10, position: 'absolute', bottom: 0, marginBottom: 20 }}>
+                <CusButtom textStyle={styles.txt} BTNstyle={styles.btnStyle} text={"Open Scanner"} />
+                <CusButtom textStyle={styles.txt} BTNstyle={styles.btnStyle} text={"Copy UPI Id"} />
+            </View>
         </View>
     )
 }
@@ -41,25 +51,25 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-    txt :{
-        color : colors.purple
+    txt: {
+        color: colors.purple
     },
-    btnStyle:{
-width : width/2 - 12 , 
-borderRadius : 50 , 
-borderColor : colors.purple , 
-borderWidth :1,
-backgroundColor : colors.white
+    btnStyle: {
+        width: width / 2 - 12,
+        borderRadius: 50,
+        borderColor: colors.purple,
+        borderWidth: 1,
+        backgroundColor: colors.white
     },
     walletTxt: {
         color: colors.purple,
         fontSize: 14,
         fontWeight: 'bold'
     },
-    upi:{
-        marginTop : 20,
-        fontSize : 12 , 
-        color : colors.black, 
-        textAlign :'center'
+    upi: {
+        marginTop: 20,
+        fontSize: 12,
+        color: colors.black,
+        textAlign: 'center'
     }
 })

@@ -9,11 +9,13 @@ import AddMoney from '../popups/AddMoney';
 import QRCode from 'react-native-qrcode-svg';
 import AskMoney from '../popups/AskModel';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import { useNavigation } from '@react-navigation/native';
 // import QRCodeScanner from 'react-native-qrcode-scanner';
 // import { RNCamera } from 'react-native-camera';
 // import { check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 const { height, width } = Dimensions.get('window')
 export default function DashBoard() {
+    const navigation = useNavigation()
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
     const [showScaningModel, setShowScaningModel] = useState(false);
@@ -66,8 +68,17 @@ export default function DashBoard() {
     const handleBarCodeScanned = ({ type, data }) => {
         setScanned(true);
         setShowScaningModel(false)
+        if (type !== 256) {
+            Alert.alert("Please scan a QR code", "Bar codes are not allowed to receiving money.");
+            return
+        }
         alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+
+        console.log("type", typeof type)
+
+
     };
+
 
     if (hasPermission === null) {
         return <Text>Requesting for camera permission</Text>;
@@ -105,13 +116,14 @@ export default function DashBoard() {
                 <CusButtom onpress={() => setAddModel(true)} textStyle={styles.textStyle} BTNstyle={styles.BTNstyle} text={'Add Money'} />
             </View>
 
-            <CusButtom textStyle={styles.prevTxt} BTNstyle={styles.prevBtn} ImgStyle={styles.icon} source={require('../assets/icon/pay.png')} text={'Previous transections'} />
+            <CusButtom textStyle={styles.prevTxt} BTNstyle={styles.prevBtn} ImgStyle={styles.icon} source={require('../assets/icon/pay.png')} text={'Previous transactions'} />
             <CusButtom textStyle={styles.prevTxt} BTNstyle={styles.prevBtn} ImgStyle={styles.icon} source={require('../assets/icon/bank.png')} text={'Check bank balance'} />
-            <CusButtom onpress={() => setGetMoneyModel(true)} text={"Receive Money"} />
-            <CusButtom onpress={() => setShowScaningModel(true)} text={"Send Money"} />
+            <CusButtom onpress={() => setShowScaningModel(true)} text={"Receive Money"} />
+            <CusButtom onpress={() => { navigation.navigate('SendMoney') }} text={"Send Money"} />
+            {/* onpress={() => setShowScaningModel(true)} */}
             {
                 addModel && <AddMoney onpress1={() => {
-                    Alert.alert(" Need to implement RBI thing");
+                    navigation.navigate('AddMoney')
                     setAddModel(false)
                 }}
                     onpress2={() => {
@@ -129,10 +141,10 @@ export default function DashBoard() {
             {showScaningModel &&
                 <Modal>
                     <BarCodeScanner
-                        onBarCodeScanned={ handleBarCodeScanned}
-                        style={{ height : height -100 , width : width}}
+                        onBarCodeScanned={handleBarCodeScanned}
+                        style={{ height: height - 100, width: width }}
                     />
-                    <CusButtom BTNstyle = {{width :"80%" , alignSelf :'center'}} text={'close'} onpress={() => setShowScaningModel(false)
+                    <CusButtom BTNstyle={{ width: "80%", alignSelf: 'center' }} text={'close'} onpress={() => setShowScaningModel(false)
                     } />
                 </Modal>
             }
